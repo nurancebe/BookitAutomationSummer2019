@@ -25,6 +25,7 @@ public class APIStepDefinitions {
         token = APIUtilities.getToken(role);
     }
 
+
     @Given("user accepts content type as {string}")
     public void user_accepts_content_type_as(String string) {
         if(string.toLowerCase().contains("json")){
@@ -36,42 +37,50 @@ public class APIStepDefinitions {
 
     @When("user sends GET request to {string}")
     public void user_sends_GET_request_to(String string) {
-        response = given().
-                        accept(contentType).
-                        auth().oauth2(token).
-                    when().
-                        get(string).prettyPeek();
+            response = given().
+                       accept(contentType).
+                       auth().oauth2(token).
+                       when().
+                       get(string).prettyPeek();
     }
 
     //Then user should be able to see 18 rooms
     @Then("user should be able to see {int} rooms")
     public void user_should_be_able_to_see_rooms(int expected) {
-        List<?> rooms = response.jsonPath().get();
-        Assert.assertEquals(expected, rooms.size());
+        List<?> rooms = response.
+                        jsonPath().
+                        get();
+                        Assert.
+                        assertEquals(expected, rooms.size());
     }
 
     // And user verifies that response status code is 200
     @Then("user verifies that response status code is {int}")
     public void user_verifies_that_response_status_code_is(int expected) {
-        Assert.assertEquals(expected, response.statusCode());
+                         Assert.
+                         assertEquals(expected, response.statusCode());
     }
-    /**
-     * Any number in cucumber test step, becomes step definition  (variable)
-     * By changing this number, you are not changing a context of test step
-     */
+
+     // Any number in cucumber test step, becomes step definition  (variable)
+     // By changing this number, you are not changing a context of test step
+
 
 
     @When("user sends POST request to {string} with following information:")
     public void user_sends_POST_request_to_with_following_information(String path, List<Map<String, String>> students) {
         for(Map<String, String> student: students){
-            response = given().
-                            auth().oauth2(token).
-                            queryParams(student).
-                            accept(contentType).
-                        when().
-                                post(path);
+                    response = given().
+                               auth().
+                               oauth2(token).
+                               queryParams(student).
+                               accept(contentType).
+                               when().
+                               post(path);
 
-            response.then().log().body(true);
+                               response.
+                               then().
+                               log().
+                               body(true);
 
         }
     }

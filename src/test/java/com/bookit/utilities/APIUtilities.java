@@ -10,7 +10,7 @@ import java.util.Map;
 
 import static io.restassured.RestAssured.*;
 
-public class APIUtilities {
+public class APIUtilities implements Endpoints {
     private static String URI = Environment.BASE_URI;
 
     /**
@@ -29,6 +29,7 @@ public class APIUtilities {
 
     /**
      * Method that generates access token
+     *
      * @param role - type of user. allowed types: student team leader, student team member and teacher
      * @return bearer token
      */
@@ -57,12 +58,36 @@ public class APIUtilities {
 
 
     /**
+     * Delete user based on email and password
+     *
+     * @param email
+     * @param password
+     * @return response
+     */
+    public static Response deleteMe(String email, String password) {
+        String token = given().
+                queryParam("email", email).
+                queryParam("password", password).
+                when().
+                get("/sign").prettyPeek().jsonPath().getString("accessToken");
+
+        int userToDelete = given().auth().oauth2(token).
+                when().
+                get("/api/users/me").jsonPath().getInt("id");
+
+        Response response = given().auth().oauth2(getToken("teacher")).delete(DELETE_STUDENT, userToDelete);
+        response.prettyPeek();
+        return response;
+    }
+
+
+    /**
      * Method to find duplicates in the list of objects. Override equals method for your custom class and provide strategy of equality.
      *
      * @param list of objects to search for duplicates
      * @return true or false
      */
-    public static boolean hasDuplicates(List list) {
+    public static boolean hasDuplicates(List<Object> list) {
         boolean hasDuplicates = false;
         for (int i = 0; i < list.size(); i++) {
             for (int j = 0; j < list.size(); j++) {
