@@ -6,13 +6,12 @@ import io.cucumber.java.*;
 import static io.restassured.RestAssured.*;
 
 public class Hooks {
-
-  //   * This hook will work,
-  //   * only if scenario or feature has @api annotation
-
+    /**
+     * This hook will work,
+     * only if scenario or feature has @api annotation
+     */
     @Before("@api")
     public void setupAPI(){
-
         baseURI = Environment.BASE_URI;
     }
 
@@ -23,7 +22,6 @@ public class Hooks {
 
     @After("@db")
     public void teardownDB(){
-
         DBUtility.destroy();
     }
 }
